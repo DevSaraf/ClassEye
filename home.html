@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home - ClassEye</title>
+    <!-- Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts for Poppins -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+        /* Custom styles for select dropdown arrow */
+        select {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' class='h-6 w-6' fill='none' viewBox='0 0 24 24' stroke='%236b7280'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7' /%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            background-size: 1.5em;
+            padding-right: 2.5rem;
+        }
+    </style>
+</head>
+<body class="bg-white text-gray-800">
+
+    <!-- Header Navigation -->
+    <header class="bg-[#d98e2f] shadow-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <!-- Brand Name -->
+                <div class="flex-shrink-0">
+                    <h1 class="text-3xl font-bold text-black">ClassEye</h1>
+                </div>
+
+                <!-- User Profile -->
+                <div class="flex items-center">
+                    <div class="bg-white rounded-full p-1 flex items-center shadow">
+                        <div class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center mr-2">
+                             <!-- User Icon SVG -->
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-600" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
+                            </svg>
+                        </div>
+                        <span class="text-gray-800 font-semibold pr-3">John Doe</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="max-w-2xl mx-auto mt-16 px-4 pb-24">
+        <h2 class="text-5xl font-bold text-center mb-12">Welcome Back!</h2>
+
+        <div class="space-y-6">
+            <!-- Day and Date -->
+            <div class="border-b-2 border-gray-300 pb-2">
+                <label for="date" class="text-sm font-semibold text-gray-500">Day and Date</label>
+                <input type="text" id="date" name="date" class="w-full text-lg font-semibold bg-transparent border-none focus:ring-0" readonly>
+            </div>
+
+            <!-- Class Dropdown -->
+            <div class="border-b-2 border-gray-300 pb-2">
+                <label for="class-select" class="text-sm font-semibold text-gray-500">Class</label>
+                <select id="class-select" name="class" class="w-full text-lg font-semibold bg-transparent border-none focus:ring-0">
+                    <option value="" disabled selected>Select Class</option>
+                    <option value="10">10th Grade</option>
+                    <option value="11">11th Grade</option>
+                    <option value="12">12th Grade</option>
+                </select>
+            </div>
+
+            <!-- Section Dropdown -->
+            <div class="border-b-2 border-gray-300 pb-2">
+                <label for="section-select" class="text-sm font-semibold text-gray-500">Section</label>
+                <select id="section-select" name="section" class="w-full text-lg font-semibold bg-transparent border-none focus:ring-0">
+                    <option value="" disabled selected>Select Section</option>
+                    <option value="A">Section A</option>
+                    <option value="B">Section B</option>
+                    <option value="C">Section C</option>
+                </select>
+            </div>
+
+            <!-- Subject Dropdown -->
+            <div class="border-b-2 border-gray-300 pb-2">
+                <label for="subject-select" class="text-sm font-semibold text-gray-500">Subject</label>
+                <select id="subject-select" name="subject" class="w-full text-lg font-semibold bg-transparent border-none focus:ring-0">
+                    <option value="" disabled selected>Select Subject</option>
+                    <option value="math">Mathematics</option>
+                    <option value="science">Science</option>
+                    <option value="history">History</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Action Button -->
+        <div class="mt-16 text-center">
+            <button id="start-attendance-btn" class="bg-[#d98e2f] text-white font-bold py-4 px-12 rounded-full text-lg transition-all duration-300 shadow-lg transform hover:scale-105">
+                Start Camera & Take Attendance
+            </button>
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Set the current date automatically
+            const dateField = document.getElementById('date');
+            const today = new Date();
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            dateField.value = today.toLocaleDateString('en-US', options);
+
+            // Get elements for button logic
+            const classSelect = document.getElementById('class-select');
+            const sectionSelect = document.getElementById('section-select');
+            const subjectSelect = document.getElementById('subject-select');
+            const startBtn = document.getElementById('start-attendance-btn');
+
+            // Function to check if all dropdowns are selected and update button state
+            function checkSelections() {
+                const allSelected = classSelect.value && sectionSelect.value && subjectSelect.value;
+                if (allSelected) {
+                    startBtn.disabled = false;
+                    startBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+                } else {
+                    startBtn.disabled = true;
+                    startBtn.classList.add('opacity-50', 'cursor-not-allowed');
+                }
+            }
+
+            // Add event listeners to all dropdowns
+            classSelect.addEventListener('change', checkSelections);
+            sectionSelect.addEventListener('change', checkSelections);
+            subjectSelect.addEventListener('change', checkSelections);
+
+            // Add click event listener to the button for redirection
+            startBtn.addEventListener('click', () => {
+                // The 'disabled' property will prevent this from firing if the button is disabled
+                window.location.href = 'attendance.html';
+            });
+
+            // Initial check when the page loads to set initial button state
+            checkSelections();
+        });
+    </script>
+</body>
+</html>
+

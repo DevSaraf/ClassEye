@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ClassEye Login</title>
+    <!-- Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts for Poppins -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Custom styles to extend Tailwind */
+        body {
+            font-family: 'Poppins', sans-serif;
+            /* Create the split background */
+            background: linear-gradient(to right, #d98e2f 50%, #ffffff 50%);
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center min-h-screen py-8">
+
+    <!-- Main Login Card Container -->
+    <div class="w-full max-w-4xl mx-4 sm:mx-0">
+        <div class="flex bg-white rounded-3xl shadow-2xl overflow-hidden">
+
+            <!-- Left Side: Login Form -->
+            <div class="w-1/2 bg-[#f0f2f5] p-12 flex flex-col justify-center">
+                <h2 class="text-3xl font-bold text-gray-800 mb-6">Login</h2>
+                <!-- The form no longer needs action or method for this simple navigation -->
+                <form>
+                    <div>
+                        <label for="email" class="sr-only">Email</label>
+                        <input type="email" name="email" id="email" class="block w-full h-12 bg-[#e4e4e4] rounded-lg border-0 px-4 mb-4 text-gray-700 placeholder:text-gray-500 focus:ring-2 focus:ring-inset focus:ring-[#d98e2f]" placeholder="Email Address">
+                    </div>
+                    <div>
+                        <label for="password" class="sr-only">Password</label>
+                        <input type="password" name="password" id="password" class="block w-full h-12 bg-[#e4e4e4] rounded-lg border-0 px-4 mb-6 text-gray-700 placeholder:text-gray-500 focus:ring-2 focus:ring-inset focus:ring-[#d98e2f]" placeholder="Password">
+                    </div>
+                    <div>
+                        <!-- Changed type to "button" and added an ID for the script to find it -->
+                        <button type="button" id="signin-btn" class="flex w-full justify-center rounded-lg bg-[#d98e2f] px-3 py-3 text-md font-semibold leading-6 text-black shadow-sm hover:bg-amber-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-600 transition-colors duration-200">
+                            Sign in
+                        </button>
+                    </div>
+                </form>
+
+                <!-- Sign Up Link -->
+                <p class="mt-8 text-center text-sm text-gray-600">
+                    Don't have an account?
+                    <a href="signup.html" class="font-semibold leading-6 text-amber-600 hover:text-amber-500">Sign Up</a>
+                </p>
+            </div>
+
+            <!-- Right Side: Brand Name -->
+            <div class="w-1/2 bg-[#d98e2f] flex items-center justify-center">
+                <h1 class="text-5xl font-bold text-black">ClassEye</h1>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        // This script handles the navigation to the home page
+        document.getElementById('signin-btn').addEventListener('click', function() {
+            // Redirect the user to home.html when the button is clicked
+            window.location.href = 'home.html';
+        });
+    </script>
+
+</body>
+</html>
+

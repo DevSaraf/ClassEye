@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Take Attendance - ClassEye</title>
+    <!-- Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts for Poppins -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-white text-gray-800">
+
+    <!-- Header Navigation -->
+    <header class="bg-[#d98e2f] shadow-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <!-- Brand Name -->
+                <div class="flex-shrink-0">
+                    <h1 class="text-3xl font-bold text-black">ClassEye</h1>
+                </div>
+
+                <!-- User Profile -->
+                <div class="flex items-center">
+                    <div class="bg-white rounded-full p-1 flex items-center shadow">
+                        <div class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center mr-2">
+                             <!-- User Icon SVG -->
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-600" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
+                            </svg>
+                        </div>
+                        <span class="text-gray-800 font-semibold pr-3">John Doe</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="max-w-4xl mx-auto mt-16 text-center">
+        
+        <!-- Top Action Buttons: Take Photo & Take Video -->
+        <div class="flex justify-center items-center gap-16 mb-12">
+            
+            <!-- Take Photo Button -->
+            <!-- **MODIFIED:** Added id="take-photo-btn" -->
+            <button id="take-photo-btn" class="flex flex-col items-center justify-center p-8 rounded-2xl w-48 h-48 hover:bg-gray-100 transition-colors duration-200">
+                <img src="camera_photo_logo-removebg-preview.png" alt="Take Photo Icon" class="h-24 w-24 mb-2 object-contain">
+                <span class="text-xl font-semibold">Take Photo</span>
+            </button>
+            
+            <!-- Take Video Button -->
+            <button class="flex flex-col items-center justify-center p-8 rounded-2xl w-48 h-48 hover:bg-gray-100 transition-colors duration-200">
+                <img src="camera_video_logo-removebg-preview.png" alt="Take Video Icon" class="h-24 w-24 mb-2 object-contain">
+                <span class="text-xl font-semibold">Take Video</span>
+            </button>
+        </div>
+        
+        <!-- Bottom Action Buttons: Summary & Manual Entry -->
+        <div class="flex flex-col items-center gap-6">
+            <button class="bg-gray-200 text-gray-800 font-bold py-4 px-12 rounded-full w-80 text-lg hover:bg-gray-300 transition-colors duration-200">
+                Attendance Summary
+            </button>
+            <button class="bg-gray-200 text-gray-800 font-bold py-4 px-12 rounded-full w-80 text-lg hover:bg-gray-300 transition-colors duration-200">
+                Enter Manually
+            </button>
+        </div>
+
+    </main>
+
+    <!-- **ADDED:** Camera Modal (Initially Hidden) -->
+    <div id="camera-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
+        <div class="bg-white p-6 rounded-lg shadow-xl text-center">
+            <h3 class="text-2xl font-bold mb-4">Take Class Photo</h3>
+            <!-- Live video feed will be shown here -->
+            <video id="webcam-feed" width="640" height="480" autoplay class="rounded-md bg-gray-200"></video>
+            <!-- Canvas for capturing the image (hidden) -->
+            <canvas id="photo-canvas" width="640" height="480" class="hidden"></canvas>
+            
+            <div class="mt-4">
+                <button id="capture-btn" class="bg-[#d98e2f] text-white font-bold py-2 px-6 rounded-lg text-lg hover:bg-amber-600">
+                    Capture & Check Attendance
+                </button>
+                <button id="close-modal-btn" class="bg-gray-400 text-white font-bold py-2 px-6 rounded-lg text-lg hover:bg-gray-500 ml-4">
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- **ADDED:** Webcam and API communication logic -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const takePhotoButton = document.getElementById('take-photo-btn');
+            const modal = document.getElementById('camera-modal');
+            const video = document.getElementById('webcam-feed');
+            const canvas = document.getElementById('photo-canvas');
+            const captureBtn = document.getElementById('capture-btn');
+            const closeModalBtn = document.getElementById('close-modal-btn');
+            let stream;
+
+            // 1. Open the modal and start the webcam
+            takePhotoButton.addEventListener('click', async () => {
+                modal.classList.remove('hidden');
+                try {
+                    stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                    video.srcObject = stream;
+                } catch (err) {
+                    console.error("Error accessing webcam: ", err);
+                    alert("Could not access the webcam. Please ensure you have given permission in your browser.");
+                }
+            });
+
+            // 2. Capture the photo and send to backend
+            captureBtn.addEventListener('click', () => {
+                const context = canvas.getContext('2d');
+                // Draw the current video frame onto the canvas
+                context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+                // Convert the canvas image to a file (Blob)
+                canvas.toBlob((blob) => {
+                    // Create a FormData object to send the file
+                    const formData = new FormData();
+                    formData.append('file', blob, 'attendance_photo.jpg');
+
+                    // Use fetch to send the image to your Flask API
+                    // **IMPORTANT:** Make sure your Flask backend is running!
+                    fetch('http://127.0.0.1:5000/api/take_attendance', {
+                        method: 'POST',
+                        body: formData,
+                    })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status}`);
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        console.log('Success:', data);
+                        const presentStudents = data.present_students || [];
+                        const message = presentStudents.length > 0 
+                            ? 'Attendance taken for: ' + presentStudents.join(', ')
+                            : 'No recognized students found in the photo.';
+                        alert(message);
+                        // Close the modal after successful capture
+                        closeModal();
+                    })
+                    .catch((error) => {
+                        console.error('Error:', error);
+                        alert('An error occurred. Is the backend server running?');
+                    });
+
+                }, 'image/jpeg');
+            });
+
+            // 3. Close the modal and stop the webcam
+            function closeModal() {
+                modal.classList.add('hidden');
+                if (stream) {
+                    stream.getTracks().forEach(track => track.stop());
+                }
+            }
+            closeModalBtn.addEventListener('click', closeModal);
+        });
+    </script>
+</body>
+</html>
+
